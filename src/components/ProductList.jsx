@@ -12,7 +12,6 @@ ProductList.defaultProps = {
 
 function ProductList(props) {
     const { productList } = props;
-    console.log(productList);
     return (
         <div className="product-list card-deck">
             {productList.map((item) => {

@@ -4,6 +4,8 @@ import './index.css';
 import "./assets/css/bootstrap.min.css";
 import "./assets/css/home.css";
 import "./assets/css/product.css";
+import "./assets/css/search.css";
+import "./assets/css/category.css";
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 

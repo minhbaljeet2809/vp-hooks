@@ -1,25 +1,27 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+
 import {
   getProductItem,
   getCommentByProductId,
-  creatCommentByProductId
+  creatCommentByProductId,
 } from "../services/Api";
 
-ProductDetail.prototype = {
-
-}
+ProductDetail.prototype = {};
 
 export default function ProductDetail(props) {
-
   const [productDetail, setProductDetail] = useState({});
   const [comments, setComments] = useState([]);
+  // const [qty, setQty] = useState(1);
   const [input, setInput] = useState({
     content: "",
     email: "",
-    name: ""
-  })
+    name: "",
+  });
 
   const id = props?.match?.params?.id;
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     getProductItem(id).then((res) => {
@@ -36,7 +38,7 @@ export default function ProductDetail(props) {
       if (res?.data?.data?.docs) {
         setComments(res.data.data.docs);
       }
-    })
+    });
 
     // return () => {
     //   cleanup
@@ -45,13 +47,14 @@ export default function ProductDetail(props) {
 
   const handleChangeInput = (e) => {
     let value = e.target.value;
-    let name = e.target.name
+    let name = e.target.name;
     setInput({
-      ...input, [name]: value
+      ...input,
+      [name]: value,
     });
-  }
+  };
 
-  function onSubmitCreatComment(e){
+  function onSubmitCreatComment(e) {
     e.preventDefault();
     console.log("submitttttttttttt");
     creatCommentByProductId(id, input).then((res) => {
@@ -68,6 +71,21 @@ export default function ProductDetail(props) {
     });
   }
 
+  const onHandleClickCart = ()=>{
+    console.log("mua hafng")
+    
+    dispatch({
+      type : "ADD_TO_CART",
+      payload: {
+        id: productDetail._id,
+        qty: 1,
+        name: productDetail.name,
+        price: productDetail.name,
+        img: productDetail.image
+      }
+    })
+  } 
+
   return (
     <div>
       {/*	List Product	*/}
@@ -75,7 +93,11 @@ export default function ProductDetail(props) {
         <div id="product-head" className="row">
           <div id="product-img" className="col-lg-6 col-md-6 col-sm-12">
             <img
-              src={productDetail.image ? `http://vietpro.online/assets/uploads/${productDetail?.image}` : ''}
+              src={
+                productDetail.image
+                  ? `http://vietpro.online/assets/uploads/${productDetail?.image}`
+                  : ""
+              }
             />
           </div>
           <div id="product-details" className="col-lg-6 col-md-6 col-sm-12">
@@ -101,20 +123,26 @@ export default function ProductDetail(props) {
                 }).format(productDetail?.price)}
               </li>
               <li>
-                {productDetail?.is_stock ? (<span className="badge badge-success">Còn hàng</span>)
-                  : (<span className="badge badge-success">Hết hàng</span>)
-                }
+                {productDetail?.is_stock ? (
+                  <span className="badge badge-success">Còn hàng</span>
+                ) : (
+                  <span className="badge badge-danger">Hết hàng</span>
+                )}
               </li>
             </ul>
-            <div id="add-cart">
-              <a href="#">Mua ngay</a>
-            </div>
+            {productDetail?.is_stock ? (
+              <div id="add-cart" onClick={onHandleClickCart}>
+                <button className='btn btn-success'>Mua ngay</button>
+              </div>
+            ) : null}
           </div>
         </div>
         <div id="product-body" className="row">
           <div className="col-lg-12 col-md-12 col-sm-12">
             <h3>Đánh giá về iPhone X 64GB</h3>
-            <div dangerouslySetInnerHTML={{ __html: productDetail?.details }}></div>
+            <div
+              dangerouslySetInnerHTML={{ __html: productDetail?.details }}
+            ></div>
           </div>
         </div>
         {/* { add comment } */}
@@ -216,4 +244,4 @@ export default function ProductDetail(props) {
       </div>
     </div>
   );
-};
+}
